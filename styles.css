@@ -20,14 +20,23 @@
 }
 
 body.dark-mode {
-    --color-bg: #1a1c2a;
-    --color-surface: #12141A;
+    /*--color-bg: #1a1c2a;*/
+    --color-bg: rgb(35, 39, 46);
+    /*--color-surface: #12141A;*/
+    --color-surface: rgb(30, 34, 39);
     --color-border: #2B2D3B;
     --color-text-primary: #FFFFFF;
     --color-text-secondary: #9CA2B8;
     --color-tooltip-bg: #ffffff;
     --color-tooltip-text: #000000;
     --shadow-border: rgba(255, 255, 255, 0.1);
+}
+
+/* ========== ESTILOS BASE ========== */
+body {
+    background-color: var(--color-bg);
+    transition: background-color 0.3s ease, color 0.3s ease;
+    color: var(--color-text-primary);
 }
 
 /* ========== BARRA SUPERIOR FIJA ========== */
@@ -106,8 +115,12 @@ body.dark-mode {
 }
 
 .search-btn {
-    background: var(--color-bg);
-    border: 1px solid var(--color-border);
+    background: none;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    padding: 0 0.5rem;
 }
 
 .search-container:focus-within {
@@ -117,7 +130,6 @@ body.dark-mode {
 .search-container img {
     width: 20px;
     height: 20px;
-    margin-right: 0.5rem;
 }
 
 .search-container input {
@@ -127,6 +139,7 @@ body.dark-mode {
     outline: none;
     color: var(--color-text-primary);
     font-size: 0.9rem;
+    padding: 0.4rem 0;
 }
 
 .top-bar-right {
@@ -188,7 +201,7 @@ body.dark-mode {
     width: var(--sidebar-width);
     background-color: var(--color-surface);
     box-shadow: 1px 0px 10px var(--shadow-border);
-    transition: width 0.5s ease;
+    transition: width 0.5s ease, transform 0.3s ease;
     z-index: 999;
     overflow-x: hidden;
     overflow-y: auto;
@@ -258,7 +271,7 @@ body.dark-mode {
     transition: transform 0.3s ease;
 }
 
-/* Sub Menú */
+/* Sub Menú - Estilo normal (acordeón) */
 .sub-menu {
     height: 0;
     transition: all 0.3s ease;
@@ -298,11 +311,12 @@ body.dark-mode {
     margin-top: var(--header-height);
     margin-left: var(--sidebar-width);
     padding: 1.5rem;
-    transition: margin-left 0.5s ease;
+    transition: margin-left 0.5s ease, background-color 0.3s ease;
     min-height: calc(100vh - var(--header-height));
+    background-color: var(--color-bg);
 }
 
-.sidebar.minimize ~ .main-content {
+.sidebar.minimize~.main-content {
     margin-left: var(--sidebar-collapsed-width);
 }
 
@@ -382,14 +396,14 @@ body.dark-mode {
     color: var(--color-text-secondary);
 }
 
-/* ========== TWO COLUMN LAYOUT (CALENDARIO Y BÚSQUEDA) ========== */
+/* ========== TWO COLUMN LAYOUT ========== */
 .two-column-layout {
     display: flex;
     flex-direction: row;
     gap: 2rem;
 }
 
-.two-column-layout > div:first-child {
+.two-column-layout>div:first-child {
     flex: 1;
     min-width: 0;
 }
@@ -452,7 +466,6 @@ body.dark-mode {
     font-size: 0.8rem;
 }
 
-/* Resultados */
 .evento-resultado-item {
     display: flex;
     align-items: center;
@@ -608,7 +621,10 @@ body.dark-mode {
     margin: 1rem 0;
 }
 
-.detalle-fechas, .detalle-ubicacion, .detalle-descripcion, .detalle-contacto {
+.detalle-fechas,
+.detalle-ubicacion,
+.detalle-descripcion,
+.detalle-contacto {
     margin-bottom: 1.2rem;
 }
 
@@ -698,95 +714,6 @@ body.dark-mode {
     color: white;
 }
 
-/* ========== TOOLTIP SIDEBAR MINIMIZADO ========== */
-.sidebar.minimize .menu-item:hover .menu-link span {
-    position: absolute;
-    left: 4.2rem;
-    top: 50%;
-    transform: translateY(-50%);
-    padding: 0.5rem 0.8rem;
-    background-color: var(--color-tooltip-bg);
-    color: var(--color-tooltip-text);
-    border-radius: 0.5rem;
-    font-size: 0.75rem;
-    white-space: nowrap;
-    z-index: 1001;
-    display: block !important;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-}
-
-.sidebar.minimize .sub-menu {
-    position: absolute;
-    left: 4.2rem;
-    top: 3rem;
-    background-color: var(--color-surface);
-    border-radius: 0.5rem;
-    width: 160px;
-    box-shadow: 0 4px 12px var(--shadow-border);
-    z-index: 1000;
-}
-
-.sidebar.minimize .menu-item.sub-menu-toggle .sub-menu {
-    margin-top: 0.5rem;
-    height: auto !important;
-    padding: 0.2rem 0 !important;
-}
-
-.sidebar.minimize .sub-menu::before {
-    width: 0;
-}
-
-.sidebar.minimize .sub-menu .sub-menu-link {
-    margin-left: 0;
-    padding: 0.5rem 0.8rem;
-}
-
-/* ========== RESPONSIVE ========== */
-@media (max-width: 900px) {
-    .two-column-layout {
-        flex-direction: column;
-    }
-    .filters-sidebar {
-        width: 100%;
-        position: static;
-    }
-}
-
-@media (max-width: 700px) {
-    .sidebar {
-        transform: translateX(-100%);
-        transition: transform 0.3s ease;
-    }
-    .sidebar:not(.minimize) {
-        transform: translateX(0);
-        width: 80%;
-        z-index: 1001;
-    }
-    body.sidebar-hidden .sidebar {
-        transform: translateX(-100%);
-    }
-    .main-content {
-        margin-left: 0 !important;
-        padding: 1rem;
-    }
-    .top-bar-center {
-        display: none;
-    }
-    .evento-card-inicio {
-        width: 160px;
-    }
-    .evento-poster {
-        height: 140px;
-    }
-    .detalle-poster {
-        max-width: 100%;
-    }
-    .resultados-scroll {
-        max-height: calc(100vh - 350px);
-    }
-}
-
-
 /* ========== ESTILOS PARA CALENDARIO ========== */
 .modo-select {
     width: 100%;
@@ -832,9 +759,219 @@ body.dark-mode {
     background: var(--color-border);
 }
 
+/* ========== TOOLTIP SIDEBAR MINIMIZADO (SOLO DESKTOP) ========== */
+@media (min-width: 701px) {
+
+    .sidebar.minimize .menu-item:hover,
+    .sidebar.minimize .menu-item.sub-menu-toggle {
+        overflow: visible;
+    }
+
+    .sidebar.minimize .menu-item:hover span,
+    .sidebar.minimize .menu-item.sub-menu-toggle span {
+        position: absolute;
+        left: 4.2rem;
+        padding: 0.5rem;
+        background-color: var(--color-tooltip-bg);
+        color: var(--color-tooltip-text);
+        transition: all 0.3s ease;
+        border-radius: 0.5rem;
+        font-size: 0.75rem;
+        white-space: nowrap;
+        z-index: 1001;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .menu-tooltip {
+        animation: tooltipFadeIn 0.2s ease;
+        font-family: "Poppins", sans-serif;
+        letter-spacing: 0.3px;
+    }
+
+    @keyframes tooltipFadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(-50%) scale(0.95);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(-50%) scale(1);
+        }
+    }
+}
+
+/* ========== SUBMENÚ FLOTANTE (SOLO CUANDO MENÚ ESTÁ MINIMIZADO) ========== */
+.sidebar.minimize .sub-menu.floating-submenu {
+    transition: opacity 0.2s ease, visibility 0.2s ease;
+    width: 240px !important;
+    min-width: 220px;
+    background-color: var(--color-surface);
+    border-radius: 0.75rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    padding: 0.5rem 0;
+    overflow-y: auto;
+    border: 1px solid var(--color-border);
+}
+
+.sidebar.minimize .sub-menu.floating-submenu .sub-menu-link {
+    margin-left: 0 !important;
+    padding: 0.7rem 1rem !important;
+    font-size: 0.85rem;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--color-text-secondary);
+}
+
+.sidebar.minimize .sub-menu.floating-submenu .sub-menu-link:hover {
+    background-color: var(--color-bg);
+    color: var(--color-text-primary);
+}
+
+.sidebar.minimize .sub-menu.floating-submenu::-webkit-scrollbar {
+    width: 6px;
+}
+
+.sidebar.minimize .sub-menu.floating-submenu::-webkit-scrollbar-track {
+    background: var(--color-border);
+    border-radius: 4px;
+}
+
+.sidebar.minimize .sub-menu.floating-submenu::-webkit-scrollbar-thumb {
+    background: rgb(2, 90, 138);
+    border-radius: 4px;
+}
+
+/* ========== RESPONSIVE MÓVIL (≤700px) ========== */
 @media (max-width: 700px) {
-    .modo-select, .fecha-input {
+    .sidebar {
+        width: 75% !important;
+        max-width: 280px;
+        transform: translateX(-100%);
+        transition: transform 0.3s ease;
+        z-index: 1001;
+    }
+
+    body.sidebar-visible .sidebar {
+        transform: translateX(0);
+    }
+
+    .sidebar .menu-link span {
+        display: inline-block !important;
+    }
+
+    .sidebar.minimize {
+        width: 75% !important;
+    }
+
+    .sidebar.minimize .menu-link span {
+        display: inline-block !important;
+    }
+
+    .menu-tooltip {
+        display: none !important;
+    }
+
+    .sidebar.minimize .menu-item:hover span,
+    .sidebar.minimize .menu-item.sub-menu-toggle span {
+        display: none !important;
+    }
+
+    .sub-menu {
+        position: relative !important;
+        left: auto !important;
+        top: auto !important;
+        width: 100% !important;
+        max-height: none !important;
+        overflow-y: visible !important;
+        box-shadow: none !important;
+        background-color: transparent !important;
+    }
+
+    .sub-menu .sub-menu-link {
+        margin-left: 2.8rem !important;
+        padding: 0.5rem 0.8rem !important;
+        white-space: normal;
+        font-size: 0.8rem;
+    }
+
+    .sub-menu::before {
+        display: block !important;
+        content: '';
+        position: absolute;
+        height: 100%;
+        width: 2px;
+        margin-left: 1.2rem;
+        background-color: var(--color-border);
+    }
+
+    .sub-menu.floating-submenu {
+        position: relative !important;
+        left: auto !important;
+        top: auto !important;
+        width: 100% !important;
+        background-color: transparent !important;
+        box-shadow: none !important;
+        border: none !important;
+        padding: 0 !important;
+    }
+
+    .sub-menu.floating-submenu .sub-menu-link {
+        margin-left: 2.8rem !important;
+        padding: 0.5rem 0.8rem !important;
+        white-space: normal;
+    }
+
+    .main-content {
+        margin-left: 0 !important;
+        padding: 1rem;
+    }
+
+    .top-bar-center {
+        display: none;
+    }
+
+    .evento-card-inicio {
+        width: 160px;
+    }
+
+    .evento-poster {
+        height: 140px;
+    }
+
+    .detalle-poster {
+        max-width: 100%;
+    }
+
+    .resultados-scroll {
+        max-height: calc(100vh - 350px);
+    }
+
+    .two-column-layout {
+        flex-direction: column;
+    }
+
+    .filters-sidebar {
+        width: 100%;
+        position: static;
+    }
+
+    .modo-select,
+    .fecha-input {
         padding: 0.5rem;
         font-size: 0.8rem;
+    }
+}
+
+@media (max-width: 900px) and (min-width: 701px) {
+    .two-column-layout {
+        flex-direction: column;
+    }
+
+    .filters-sidebar {
+        width: 100%;
+        position: static;
     }
 }

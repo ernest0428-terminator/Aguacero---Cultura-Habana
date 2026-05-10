@@ -51,121 +51,311 @@ function applyTheme() {
     }
 }
 
-// ==================== MENÚ LATERAL COMPLETO ====================
+// ==================== DETECTAR MÓVIL ====================
+function isMobile() {
+    return window.innerWidth <= 700;
+}
+
+// ==================== MENÚ LATERAL ====================
 function initSidebar() {
     const sidebar = document.getElementById('sidebar');
     const menuToggleBtn = document.getElementById('menuToggleBtn');
     const categoriasBtn = document.getElementById('categoriasBtn');
+    const categoriasMenuItem = document.getElementById('categoriasDropdown');
     const submenuCategorias = document.getElementById('submenuCategorias');
     
     if (!sidebar) return;
     
-    // Aplicar estado guardado del menú
-    if (isMenuMinimized) {
-        sidebar.classList.add('minimize');
-    } else {
-        sidebar.classList.remove('minimize');
-    }
-    
-    // Toggle del menú (contraer/expandir)
-    if (menuToggleBtn) {
-        menuToggleBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            isMenuMinimized = !isMenuMinimized;
-            localStorage.setItem('menuMinimized', isMenuMinimized);
+    // ========== APLICAR ESTADO INICIAL ==========
+    function applyInitialState() {
+        if (isMobile()) {
+            sidebar.classList.remove('minimize');
+            document.body.classList.remove('sidebar-visible');
+            if (submenuCategorias) {
+                submenuCategorias.classList.remove('floating-submenu', 'submenu-visible');
+                submenuCategorias.style.cssText = '';
+            }
+        } else {
+            document.body.classList.remove('sidebar-visible');
             if (isMenuMinimized) {
                 sidebar.classList.add('minimize');
             } else {
                 sidebar.classList.remove('minimize');
-                // Si se expande, cerramos el submenú de categorías
-                if (submenuCategorias) {
-                    submenuCategorias.style.height = '0';
-                    submenuCategorias.style.padding = '0';
-                    if (categoriasBtn) categoriasBtn.parentElement.classList.remove('sub-menu-toggle');
-                }
             }
-            // Refrescar mapa si existe
-            if (typeof window.dispatchEvent === 'function') {
-                setTimeout(() => {
-                    window.dispatchEvent(new Event('resize'));
-                }, 300);
+        }
+    }
+    
+    applyInitialState();
+    
+    // ========== TOGGLE DEL MENÚ ==========
+    if (menuToggleBtn) {
+        menuToggleBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            
+            if (isMobile()) {
+                document.body.classList.toggle('sidebar-visible');
+            } else {
+                isMenuMinimized = !isMenuMinimized;
+                localStorage.setItem('menuMinimized', isMenuMinimized);
+                
+                if (isMenuMinimized) {
+                    sidebar.classList.add('minimize');
+                    if (submenuCategorias) {
+                        submenuCategorias.classList.remove('floating-submenu', 'submenu-visible');
+                        submenuCategorias.style.cssText = '';
+                        if (categoriasMenuItem) {
+                            categoriasMenuItem.classList.remove('sub-menu-toggle');
+                        }
+                    }
+                } else {
+                    sidebar.classList.remove('minimize');
+                    if (submenuCategorias) {
+                        submenuCategorias.classList.remove('floating-submenu', 'submenu-visible');
+                        submenuCategorias.style.cssText = '';
+                        if (categoriasMenuItem) {
+                            categoriasMenuItem.classList.remove('sub-menu-toggle');
+                        }
+                    }
+                }
             }
         });
     }
     
-    // Desplegar submenú de categorías
-    if (categoriasBtn && submenuCategorias) {
-        let categoriasOpen = false;
+    // ========== COMPORTAMIENTO DE CATEGORÍAS ==========
+    if (categoriasBtn && submenuCategorias && categoriasMenuItem) {
         
         categoriasBtn.addEventListener('click', (e) => {
             e.preventDefault();
             e.stopPropagation();
             
-            // Si el menú está minimizado, lo expandimos primero
-            if (sidebar.classList.contains('minimize')) {
-                isMenuMinimized = false;
-                localStorage.setItem('menuMinimized', false);
-                sidebar.classList.remove('minimize');
-                setTimeout(() => {
-                    categoriasOpen = !categoriasOpen;
-                    if (categoriasOpen) {
-                        submenuCategorias.style.height = `${submenuCategorias.scrollHeight + 10}px`;
-                        submenuCategorias.style.padding = '0.5rem 0';
-                        categoriasBtn.parentElement.classList.add('sub-menu-toggle');
-                    } else {
-                        submenuCategorias.style.height = '0';
-                        submenuCategorias.style.padding = '0';
-                        categoriasBtn.parentElement.classList.remove('sub-menu-toggle');
-                    }
-                }, 300);
+            // MÓVIL: acordeón normal
+            if (isMobile()) {
+                const isOpen = categoriasMenuItem.classList.contains('sub-menu-toggle');
+                if (!isOpen) {
+                    submenuCategorias.style.height = `${submenuCategorias.scrollHeight + 10}px`;
+                    submenuCategorias.style.padding = '0.2rem 0';
+                    submenuCategorias.style.opacity = '1';
+                    submenuCategorias.style.visibility = 'visible';
+                    submenuCategorias.classList.remove('floating-submenu');
+                    categoriasMenuItem.classList.add('sub-menu-toggle');
+                } else {
+                    submenuCategorias.style.height = '0';
+                    submenuCategorias.style.padding = '0';
+                    submenuCategorias.style.opacity = '0';
+                    submenuCategorias.style.visibility = 'hidden';
+                    categoriasMenuItem.classList.remove('sub-menu-toggle');
+                }
                 return;
             }
             
-            // Comportamiento normal cuando está expandido
-            categoriasOpen = !categoriasOpen;
-            if (categoriasOpen) {
-                submenuCategorias.style.height = `${submenuCategorias.scrollHeight + 10}px`;
+            // DESKTOP - MENÚ EXPANDIDO: acordeón normal
+            if (!sidebar.classList.contains('minimize')) {
+                const isOpen = categoriasMenuItem.classList.contains('sub-menu-toggle');
+                if (!isOpen) {
+                    submenuCategorias.style.height = `${submenuCategorias.scrollHeight + 10}px`;
+                    submenuCategorias.style.padding = '0.2rem 0';
+                    submenuCategorias.style.opacity = '1';
+                    submenuCategorias.style.visibility = 'visible';
+                    submenuCategorias.classList.remove('floating-submenu');
+                    categoriasMenuItem.classList.add('sub-menu-toggle');
+                } else {
+                    submenuCategorias.style.height = '0';
+                    submenuCategorias.style.padding = '0';
+                    submenuCategorias.style.opacity = '0';
+                    submenuCategorias.style.visibility = 'hidden';
+                    categoriasMenuItem.classList.remove('sub-menu-toggle');
+                }
+                return;
+            }
+            
+            // DESKTOP - MENÚ CONTRÁIDO: submenú flotante
+            if (sidebar.classList.contains('minimize')) {
+                const isOpen = submenuCategorias.classList.contains('submenu-visible');
+                
+                if (isOpen) {
+                    submenuCategorias.classList.remove('floating-submenu', 'submenu-visible');
+                    submenuCategorias.style.cssText = '';
+                    categoriasMenuItem.classList.remove('sub-menu-toggle');
+                    return;
+                }
+                
+                const btnRect = categoriasBtn.getBoundingClientRect();
+                const sidebarRect = sidebar.getBoundingClientRect();
+                
+                submenuCategorias.style.cssText = '';
+                
+                submenuCategorias.style.position = 'fixed';
+                submenuCategorias.style.left = `${sidebarRect.right + 8}px`;
+                submenuCategorias.style.top = `${btnRect.top}px`;
+                submenuCategorias.style.width = '240px';
+                submenuCategorias.style.maxHeight = '400px';
+                submenuCategorias.style.overflowY = 'auto';
                 submenuCategorias.style.padding = '0.5rem 0';
-                categoriasBtn.parentElement.classList.add('sub-menu-toggle');
-            } else {
-                submenuCategorias.style.height = '0';
-                submenuCategorias.style.padding = '0';
-                categoriasBtn.parentElement.classList.remove('sub-menu-toggle');
+                submenuCategorias.style.backgroundColor = 'var(--color-surface)';
+                submenuCategorias.style.borderRadius = '0.75rem';
+                submenuCategorias.style.boxShadow = '0 4px 20px rgba(0,0,0,0.2)';
+                submenuCategorias.style.border = '1px solid var(--color-border)';
+                submenuCategorias.style.zIndex = '1000';
+                submenuCategorias.classList.add('floating-submenu', 'submenu-visible');
+                
+                setTimeout(() => {
+                    const submenuRect = submenuCategorias.getBoundingClientRect();
+                    if (submenuRect.bottom > window.innerHeight) {
+                        submenuCategorias.style.top = `${window.innerHeight - submenuRect.height - 10}px`;
+                    }
+                    if (submenuRect.right > window.innerWidth) {
+                        submenuCategorias.style.left = `${sidebarRect.right - submenuRect.width - 8}px`;
+                    }
+                }, 10);
+                
+                categoriasMenuItem.classList.add('sub-menu-toggle');
+                
+                const closeSubmenu = (event) => {
+                    if (!categoriasBtn.contains(event.target) && !submenuCategorias.contains(event.target)) {
+                        submenuCategorias.classList.remove('floating-submenu', 'submenu-visible');
+                        submenuCategorias.style.cssText = '';
+                        categoriasMenuItem.classList.remove('sub-menu-toggle');
+                        document.removeEventListener('click', closeSubmenu);
+                    }
+                };
+                setTimeout(() => {
+                    document.addEventListener('click', closeSubmenu);
+                }, 10);
             }
         });
     }
     
-    // Tooltips para menú minimizado - hover sobre items
+    // ========== TOOLTIPS (SOLO DESKTOP Y MENÚ MINIMIZADO) ==========
+    let activeTooltip = null;
+    let tooltipTimeout = null;
+    
     const allMenuItems = document.querySelectorAll('.menu-item');
+    
     allMenuItems.forEach(item => {
-        item.addEventListener('mouseenter', function() {
-            if (sidebar.classList.contains('minimize')) {
-                const span = this.querySelector('.menu-link span');
-                if (span) {
-                    span.style.display = 'block';
-                    span.style.opacity = '1';
+        const menuLink = item.querySelector('.menu-link');
+        const span = menuLink ? menuLink.querySelector('span') : null;
+        const itemText = span ? span.textContent : '';
+        
+        item.addEventListener('mouseenter', function(e) {
+            if (!isMobile() && sidebar.classList.contains('minimize') && itemText) {
+                if (tooltipTimeout) clearTimeout(tooltipTimeout);
+                
+                if (activeTooltip && activeTooltip.parentNode) {
+                    activeTooltip.remove();
+                    activeTooltip = null;
                 }
+                
+                const itemRect = this.getBoundingClientRect();
+                const sidebarRect = sidebar.getBoundingClientRect();
+                
+                const tooltip = document.createElement('div');
+                tooltip.className = 'menu-tooltip';
+                tooltip.textContent = itemText;
+                tooltip.style.cssText = `
+                    position: fixed;
+                    left: ${sidebarRect.right + 12}px;
+                    top: ${itemRect.top + (itemRect.height / 2)}px;
+                    transform: translateY(-50%);
+                    padding: 0.5rem 0.8rem;
+                    background-color: var(--color-tooltip-bg);
+                    color: var(--color-tooltip-text);
+                    border-radius: 0.5rem;
+                    font-size: 0.75rem;
+                    font-weight: 500;
+                    white-space: nowrap;
+                    z-index: 1001;
+                    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+                    opacity: 0;
+                    visibility: hidden;
+                    transition: opacity 0.2s ease, visibility 0.2s ease;
+                    pointer-events: none;
+                `;
+                
+                document.body.appendChild(tooltip);
+                activeTooltip = tooltip;
+                
+                setTimeout(() => {
+                    if (activeTooltip === tooltip) {
+                        tooltip.style.opacity = '1';
+                        tooltip.style.visibility = 'visible';
+                    }
+                }, 10);
             }
         });
         
         item.addEventListener('mouseleave', function() {
-            if (sidebar.classList.contains('minimize')) {
-                const span = this.querySelector('.menu-link span');
-                if (span) {
-                    span.style.display = '';
-                    span.style.opacity = '';
-                }
-                // Cerrar submenú si está abierto
-                if (this.classList.contains('menu-item-dropdown')) {
-                    const subMenu = this.querySelector('.sub-menu');
-                    if (subMenu) {
-                        this.classList.remove('sub-menu-toggle');
-                        subMenu.style.height = '0';
-                        subMenu.style.padding = '0';
-                    }
+            if (!isMobile() && sidebar.classList.contains('minimize')) {
+                if (activeTooltip) {
+                    activeTooltip.style.opacity = '0';
+                    activeTooltip.style.visibility = 'hidden';
+                    tooltipTimeout = setTimeout(() => {
+                        if (activeTooltip && activeTooltip.parentNode) {
+                            activeTooltip.remove();
+                            activeTooltip = null;
+                        }
+                        tooltipTimeout = null;
+                    }, 200);
                 }
             }
         });
+    });
+    
+    // ========== ENLACES DEL SUBMENÚ ==========
+    const subMenuLinks = document.querySelectorAll('.sub-menu-link');
+    subMenuLinks.forEach(link => {
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            const categoria = link.getAttribute('data-categoria');
+            if (categoria) {
+                if (activeTooltip && activeTooltip.parentNode) {
+                    activeTooltip.remove();
+                    activeTooltip = null;
+                }
+                window.location.href = `categoria.html?nombre=${encodeURIComponent(categoria)}`;
+            }
+        });
+    });
+    
+    // ========== CERRAR MENÚ EN MÓVIL AL NAVEGAR ==========
+    function handleMobileNavigation() {
+        if (isMobile()) {
+            const allLinks = document.querySelectorAll('.menu-link, .sub-menu-link');
+            allLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                    setTimeout(() => {
+                        document.body.classList.remove('sidebar-visible');
+                    }, 150);
+                });
+            });
+        }
+    }
+    
+    handleMobileNavigation();
+    
+    // ========== MANEJAR REDIMENSIONAMIENTO ==========
+    let resizeTimeout;
+    window.addEventListener('resize', () => {
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(() => {
+            if (isMobile()) {
+                if (activeTooltip) {
+                    activeTooltip.remove();
+                    activeTooltip = null;
+                }
+                if (submenuCategorias) {
+                    submenuCategorias.classList.remove('floating-submenu', 'submenu-visible');
+                    submenuCategorias.style.cssText = '';
+                }
+                document.body.classList.remove('sidebar-visible');
+                sidebar.classList.remove('minimize');
+            } else {
+                if (isMenuMinimized) {
+                    sidebar.classList.add('minimize');
+                } else {
+                    sidebar.classList.remove('minimize');
+                }
+            }
+        }, 100);
     });
 }
 
@@ -234,7 +424,7 @@ function initNotifications() {
     const notifBtn = document.getElementById('notificationsBtn');
     if (notifBtn) {
         notifBtn.addEventListener('click', () => {
-            alert('📢 Notificaciones: Próximamente podrás recibir alertas.');
+            alert('Notificaciones: Próximamente podrás recibir alertas.');
         });
     }
 }
@@ -247,7 +437,6 @@ document.addEventListener('DOMContentLoaded', () => {
     initSearch();
     initNotifications();
     
-    // Botón de tema oscuro
     const themeToggleBtn = document.getElementById('themeToggleBtn');
     if (themeToggleBtn) {
         themeToggleBtn.addEventListener('click', () => {
@@ -281,7 +470,6 @@ function getIconoCategoria(categoria) {
     return iconos[categoria] || '📌';
 }
 
-// Configurar clics en categorías del submenú
 function setupCategoriaLinks() {
     const subMenuLinks = document.querySelectorAll('.sub-menu-link');
     subMenuLinks.forEach(link => {
@@ -295,7 +483,6 @@ function setupCategoriaLinks() {
     });
 }
 
-// Llamar a la función cuando el DOM esté listo
 document.addEventListener('DOMContentLoaded', () => {
     setupCategoriaLinks();
 });
