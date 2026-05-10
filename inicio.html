@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inicio | Cultura Habana</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <!-- Barra superior fija -->
+    <div class="top-bar">
+        <div class="top-bar-left">
+            <button class="menu-toggle-btn" id="menuToggleBtn">
+                <img id="menuIcon" src="resources/icons_light/menu.png" alt="menú">
+            </button>
+            <div class="logo">
+                <img src="resources/aguacero_cuba_logo_trasnparente.png" alt="Logo">
+                <span>Cultura Habana</span>
+            </div>
+        </div>
+        
+        <div class="top-bar-center">
+            <div class="search-container">
+                <input type="text" id="buscador-global" placeholder="Buscar eventos...">
+                <button class="search-btn" id="searchBtn">
+                    <img id="searchIconLight" src="resources/icons_light/search.png" alt="buscar">
+                    <img id="searchIconDark" src="resources/icons_dark/search.png" alt="buscar" style="display:none;">
+                </button>
+            </div>
+        </div>
+        
+        <div class="top-bar-right">
+            <button class="icon-btn" id="themeToggleBtn">
+                <img id="themeIconLight" src="resources/icons_light/moon.png" alt="tema">
+                <img id="themeIconDark" src="resources/icons_dark/sun.png" alt="tema" style="display:none;">
+            </button>
+            <button class="icon-btn" id="notificationsBtn">
+                <img id="notifIconLight" src="resources/icons_light/bell.png" alt="notificaciones">
+                <img id="notifIconDark" src="resources/icons_dark/bell.png" alt="notificaciones" style="display:none;">
+            </button>
+            <div class="avatar" id="avatarUsuario">U</div>
+        </div>
+    </div>
+
+    <!-- Menú lateral -->
+    <div class="sidebar" id="sidebar">
+        <div class="menu_container">
+            <ul class="menu">
+                <li class="menu-item active">
+                    <a href="inicio.html" class="menu-link">
+                        <img class="home-light" src="resources/icons_light/home-alt.png" alt="inicio">
+                        <img class="home-dark" src="resources/icons_dark/home-alt.png" alt="inicio" style="display:none;">
+                        <span>Inicio</span>
+                    </a>
+                </li>
+                <li class="menu-item menu-item-dropdown" id="categoriasDropdown">
+                    <a href="#" class="menu-link" id="categoriasBtn">
+                        <img class="categories-light" src="resources/icons_light/price-tag-alt.png" alt="categorías">
+                        <img class="categories-dark" src="resources/icons_dark/price-tag-alt.png" alt="categorías" style="display:none;">
+                        <span>Categorías</span>
+                        <img class="dropdown-light" src="resources/icons_light/chevron-down.png" alt="dropdown">
+                        <img class="dropdown-dark" src="resources/icons_dark/chevron-down.png" alt="dropdown" style="display:none;">
+                    </a>
+                    <ul class="sub-menu" id="submenuCategorias">
+                        <li><a href="#" class="sub-menu-link" data-categoria="Conciertos">Conciertos</a></li>
+                        <li><a href="#" class="sub-menu-link" data-categoria="Teatro">Teatro</a></li>
+                        <li><a href="#" class="sub-menu-link" data-categoria="Cine">Cine</a></li>
+                        <li><a href="#" class="sub-menu-link" data-categoria="Exposiciones">Exposiciones</a></li>
+                        <li><a href="#" class="sub-menu-link" data-categoria="Danza">Danza</a></li>
+                        <li><a href="#" class="sub-menu-link" data-categoria="Libros">Libros</a></li>
+                        <li><a href="#" class="sub-menu-link" data-categoria="Festival">Festival</a></li>
+                        <li><a href="#" class="sub-menu-link" data-categoria="Infantiles">Infantiles</a></li>
+                        <li><a href="#" class="sub-menu-link" data-categoria="Deportes">Deportes</a></li>
+                        <li><a href="#" class="sub-menu-link" data-categoria="Talleres">Talleres</a></li>
+                        <li><a href="#" class="sub-menu-link" data-categoria="Museos">Museos</a></li>
+                        <li><a href="#" class="sub-menu-link" data-categoria="Ferias">Ferias</a></li>
+                        <li><a href="#" class="sub-menu-link" data-categoria="Farándula">Farándula</a></li>
+                    </ul>
+                </li>
+                <li class="menu-item">
+                    <a href="calendario.html" class="menu-link">
+                        <img class="calendar-light" src="resources/icons_light/calendar-alt.png" alt="calendario">
+                        <img class="calendar-dark" src="resources/icons_dark/calendar-alt.png" alt="calendario" style="display:none;">
+                        <span>Calendario</span>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="mapa.html" class="menu-link">
+                        <img class="map-light" src="resources/icons_light/map.png" alt="mapa">
+                        <img class="map-dark" src="resources/icons_dark/map.png" alt="mapa" style="display:none;">
+                        <span>Mapa</span>
+                    </a>
+                </li>
+                <li class="menu-item" id="menuPromocion" style="display: none;">
+                    <a href="promocion.html" class="menu-link">
+                        <img class="promo-light" src="resources/icons_light/plus-circle.png" alt="promocionar">
+                        <img class="promo-dark" src="resources/icons_dark/plus-circle.png" alt="promocionar" style="display:none;">
+                        <span>Promocionar</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Contenido principal -->
+    <div class="main-content" id="mainContent">
+        <div id="contenedor-listas-inicio">
+            <div class="loading-spinner">Cargando eventos...</div>
+        </div>
+    </div>
+
+    <script src="data.js"></script>
+    <script src="script.js"></script>
+    <script>
+        // ==================== SOLO FUNCIONES ESPECÍFICAS DE INICIO ====================
+        
+        function renderizarInicio() {
+            const container = document.getElementById('contenedor-listas-inicio');
+            const eventos = getEventosFuturos();
+            
+            const hoy = new Date();
+            hoy.setHours(0, 0, 0, 0);
+            const dentroDe7Dias = new Date();
+            dentroDe7Dias.setDate(hoy.getDate() + 7);
+            const eventosSemana = eventos.filter(e => new Date(e.fechaInicio) >= hoy && new Date(e.fechaInicio) <= dentroDe7Dias);
+            
+            const eventosPorCategoria = {};
+            eventos.forEach(e => {
+                if (!eventosPorCategoria[e.categoria]) eventosPorCategoria[e.categoria] = [];
+                eventosPorCategoria[e.categoria].push(e);
+            });
+            
+            for (let cat in eventosPorCategoria) {
+                eventosPorCategoria[cat].sort((a,b) => new Date(a.fechaInicio) - new Date(b.fechaInicio));
+            }
+            
+            let html = '';
+            
+            html += `<div class="lista-horizontal-container"><h2>Esta semana</h2><div class="lista-horizontal">`;
+            if (eventosSemana.length === 0) {
+                html += '<div class="loading-spinner">No hay eventos esta semana</div>';
+            } else {
+                html += eventosSemana.map(e => `
+                    <div class="evento-card-inicio" onclick="window.location.href='detallesEvento.html?id=${e.id}'">
+                        <img class="evento-poster" src="${e.poster}" onerror="this.src='https://picsum.photos/id/100/400/300'">
+                        <div class="evento-info-inicio">
+                            <h4>${e.nombre.length > 30 ? e.nombre.substring(0,27)+'...' : e.nombre}</h4>
+                            <p class="fecha">${formatFechaShort(e.fechaInicio)} ${e.horaInicio ? '· ' + e.horaInicio.substring(0,5) : ''}</p>
+                        </div>
+                    </div>
+                `).join('');
+            }
+            html += `</div></div>`;
+            
+            const ordenCategorias = ['Conciertos', 'Farándula', 'Teatro', 'Cine', 'Exposiciones', 'Danza', 'Libros', 'Festival', 'Talleres'];
+            for (const cat of ordenCategorias) {
+                if (eventosPorCategoria[cat] && eventosPorCategoria[cat].length > 0) {
+                    html += `<div class="lista-horizontal-container"><h2>${cat}</h2><div class="lista-horizontal">`;
+                    html += eventosPorCategoria[cat].map(e => `
+                        <div class="evento-card-inicio" onclick="window.location.href='detallesEvento.html?id=${e.id}'">
+                            <img class="evento-poster" src="${e.poster}" onerror="this.src='https://picsum.photos/id/100/400/300'">
+                            <div class="evento-info-inicio">
+                                <h4>${e.nombre.length > 30 ? e.nombre.substring(0,27)+'...' : e.nombre}</h4>
+                                <p class="fecha">${formatFechaShort(e.fechaInicio)} ${e.horaInicio ? '· ' + e.horaInicio.substring(0,5) : ''}</p>
+                            </div>
+                        </div>
+                    `).join('');
+                    html += `</div></div>`;
+                }
+            }
+            
+            container.innerHTML = html || '<div class="loading-spinner">No hay eventos disponibles</div>';
+        }
+        
+        // Inicializar solo la parte de inicio (el resto ya lo hace script.js)
+        renderizarInicio();
+    </script>
+</body>
+</html>

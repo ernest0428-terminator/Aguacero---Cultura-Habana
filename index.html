@@ -1,307 +1,229 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Cultura Habana | Promoción de Eventos Culturales</title>
-    <link rel="shortcut icon" href="resources/aguacero_cuba.ico" type="image/x-icon">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cultura Habana | Eventos culturales en La Habana</title>
     <link rel="stylesheet" href="styles.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
-    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
-    <!-- Leaflet para mapas -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <!-- Flatpickr para calendario -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        .landing-container {
+            min-height: 100vh;
+            background: var(--color-bg);
+        }
+        
+        .navbar-landing {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+            background: var(--color-surface);
+            box-shadow: 0 2px 10px var(--shadow-border);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .logo-area img {
+            height: 45px;
+        }
+        
+        .logo-area h1 {
+            font-size: 1.5rem;
+            color: rgb(2, 90, 138);
+        }
+        
+        .nav-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .btn-outline {
+            padding: 0.5rem 1.2rem;
+            border: 2px solid rgb(2, 90, 138);
+            background: transparent;
+            color: rgb(2, 90, 138);
+            border-radius: 30px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+        
+        .btn-outline:hover {
+            background: rgb(2, 90, 138);
+            color: white;
+        }
+        
+        .btn-primary-landing {
+            padding: 0.5rem 1.2rem;
+            background: rgb(2, 90, 138);
+            color: white;
+            border: none;
+            border-radius: 30px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+        
+        .btn-primary-landing:hover {
+            background: rgb(2, 110, 168);
+            transform: translateY(-2px);
+        }
+        
+        .hero {
+            text-align: center;
+            padding: 3rem 2rem;
+            background: linear-gradient(135deg, rgba(2,90,138,0.1) 0%, rgba(2,90,138,0.05) 100%);
+        }
+        
+        .hero h1 {
+            font-size: 2.5rem;
+            color: var(--color-text-primary);
+            margin-bottom: 1rem;
+        }
+        
+        .hero p {
+            font-size: 1.1rem;
+            color: var(--color-text-secondary);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .section-title {
+            font-size: 1.5rem;
+            margin: 2rem 1rem 1rem;
+            color: var(--color-text-primary);
+            border-left: 4px solid rgb(2, 90, 138);
+            padding-left: 1rem;
+        }
+        
+        .eventos-destacados {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1.5rem;
+            padding: 0 1rem 2rem;
+        }
+        
+        .evento-destacado-card {
+            background: var(--color-surface);
+            border-radius: 16px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 4px 12px var(--shadow-border);
+        }
+        
+        .evento-destacado-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 24px var(--shadow-border);
+        }
+        
+        .evento-destacado-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+        
+        .evento-info-landing {
+            padding: 1rem;
+        }
+        
+        .evento-info-landing h3 {
+            font-size: 1rem;
+            margin-bottom: 0.3rem;
+            color: var(--color-text-primary);
+        }
+        
+        .evento-info-landing .fecha {
+            font-size: 0.8rem;
+            color: var(--color-text-secondary);
+        }
+        
+        .evento-info-landing .categoria-badge {
+            display: inline-block;
+            background: rgb(2, 90, 138);
+            color: white;
+            padding: 0.2rem 0.6rem;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            margin-top: 0.5rem;
+        }
+        
+        @media (max-width: 600px) {
+            .navbar-landing {
+                flex-direction: column;
+                gap: 1rem;
+                padding: 1rem;
+            }
+            .hero h1 {
+                font-size: 1.8rem;
+            }
+            .eventos-destacados {
+                grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            }
+        }
+    </style>
 </head>
-
 <body>
-
-    <!-- Botón menú móvil -->
-    <div class="menu-button sidebar-button" id="sidebar-button">
-        <img class="sidebar-btn" src="resources/icons_light/menu.png" alt="intro-sidebar">
-        <img class="sidebar-exit" src="resources/icons_light/icon_x.png" alt="exit-sidebar">
-    </div>
-
-    <!-- Botón modo oscuro -->
-    <div class="dark-mode-button" id="dark-mode-button">
-        <img class="dark-mode-moon" src="resources/icons_light/moon.png" alt="moon">
-        <img class="dark-mode-sun" src="resources/icons_light/sun.png" alt="sun">
-    </div>
-
-    <!-- Sidebar / Menú lateral -->
-    <div class="sidebar" id="sidebar">
-        <div class="header">
-            <div class="menu-button" id="menu-button">
-                <img class="sidebar-menu" src="resources/icons_light/chevron-left.png" alt="menu-button">
-            </div>
-        </div>
-
-        <div class="menu_container">
-            <div class="search">
-                <img class="search-light" src="resources/icons_light/search.png" alt="search">
-                <img class="search-dark" src="resources/icons_dark/search.png" alt="search">
-                <input type="search" id="buscador-global" placeholder="Buscar eventos...">
-            </div>
-
-            <ul class="menu">
-                <li class="menu-item menu-item-static active" data-pantalla="inicio">
-                    <a href="#" class="menu-link">
-                        <img class="home-light" src="resources/icons_light/home-alt.png" alt="home">
-                        <img class="home-dark" src="resources/icons_dark/home-alt.png" alt="home">
-                        <span>Inicio</span>
-                    </a>
-                </li>
-                <li class="menu-item menu-item-static" data-pantalla="calendario">
-                    <a href="#" class="menu-link">
-                        <img class="categories-light" src="resources/icons_light/calendar.png" alt="calendar">
-                        <img class="categories-dark" src="resources/icons_dark/calendar.png" alt="calendar">
-                        <span>Calendario</span>
-                    </a>
-                </li>
-                <li class="menu-item menu-item-static" data-pantalla="promocion">
-                    <a href="#" class="menu-link">
-                        <img class="directions-light" src="resources/icons_light/plus.png" alt="promocionar">
-                        <img class="directions-dark" src="resources/icons_dark/plus.png" alt="promocionar">
-                        <span>Promocionar evento</span>
-                    </a>
-                </li>
-            </ul>
-        </div>
-    </div>
-
-    <!-- Contenido principal dinámico -->
-    <main id="main-content">
-        <!-- PANTALLA 1: INICIO -->
-        <div id="pantalla-inicio" class="pantalla active">
-            <div class="header-bienvenida">
+    <div class="landing-container">
+        <nav class="navbar-landing">
+            <div class="logo-area">
+                <img src="resources/aguacero_cuba_logo_trasnparente.png" alt="Logo" onerror="this.src='https://picsum.photos/id/100/50/50'">
                 <h1>Cultura Habana</h1>
-                <p>Descubre los mejores eventos culturales en La Habana</p>
             </div>
-            <div id="contenedor-listas-inicio">
-                <!-- Las listas se generan dinámicamente con JavaScript -->
-                <div class="loading-spinner">Cargando eventos...</div>
+            <div class="nav-buttons">
+                <a href="login.html" class="btn-outline">Iniciar sesión</a>
+                <a href="registro.html" class="btn-primary-landing">Registrarse</a>
             </div>
+        </nav>
+        
+        <div class="hero">
+            <h1>🎭 Descubre la cultura en La Habana</h1>
+            <p>Conciertos, teatro, cine, exposiciones y mucho más. Encuentra los mejores eventos culturales en tu ciudad.</p>
         </div>
+        
+        <h2 class="section-title">✨ Próximos eventos destacados</h2>
+        <div id="eventos-destacados" class="eventos-destacados">
+            <div class="loading-spinner">Cargando eventos...</div>
+        </div>
+        
+        <div style="text-align: center; padding: 2rem;">
+            <a href="inicio.html" class="btn-primary-landing" style="padding: 0.8rem 2rem;">Ver todos los eventos →</a>
+        </div>
+    </div>
 
-        <!-- PANTALLA 2: CALENDARIO -->
-        <div id="pantalla-calendario" class="pantalla">
-            <h2>Calendario de eventos</h2>
-            <div class="calendario-filtros-container">
-                <div class="calendario-container">
-                    <input type="text" id="calendario-input" placeholder="Selecciona una fecha">
+    <script src="data.js"></script>
+    <script>
+        function cargarEventosDestacados() {
+            const container = document.getElementById('eventos-destacados');
+            const eventos = getEventosFuturos();
+            
+            if (eventos.length === 0) {
+                container.innerHTML = '<p>No hay eventos próximos</p>';
+                return;
+            }
+            
+            container.innerHTML = eventos.slice(0, 8).map(evento => `
+                <div class="evento-destacado-card" onclick="window.location.href='detallesEvento.html?id=${evento.id}'">
+                    <img src="${evento.poster}" alt="${evento.nombre}" onerror="this.src='https://picsum.photos/id/100/400/300'">
+                    <div class="evento-info-landing">
+                        <h3>${evento.nombre}</h3>
+                        <p class="fecha">📅 ${new Date(evento.fechaInicio).toLocaleDateString('es-ES', { day: 'numeric', month: 'short' })}</p>
+                        <span class="categoria-badge">${evento.categoria}</span>
+                    </div>
                 </div>
-                <div class="filtros-container">
-                    <h3>Categorías</h3>
-                    <div id="filtros-categorias" class="filtros-categorias">
-                        <!-- Los checkboxes se generan dinámicamente -->
-                    </div>
-                    <div class="orden-container">
-                        <label for="orden-eventos">Ordenar por:</label>
-                        <select id="orden-eventos">
-                            <option value="asc">Más antiguos primero</option>
-                            <option value="desc">Más recientes primero</option>
-                        </select>
-                    </div>
-                </div>
-            </div>
-            <div id="lista-eventos-calendario" class="lista-eventos-grid">
-                <!-- Eventos del día seleccionado -->
-            </div>
-        </div>
-
-        <!-- PANTALLA 3: PROMOCIÓN (Formulario 3 pasos) -->
-        <div id="pantalla-promocion" class="pantalla">
-            <h2>Promociona tu evento</h2>
-            <div class="wizard-container">
-                <div class="wizard-steps">
-                    <div class="step active" data-step="1">1. Detalles</div>
-                    <div class="step" data-step="2">2. Ubicación</div>
-                    <div class="step" data-step="3">3. Contacto</div>
-                </div>
-
-                <!-- Paso 1: Detalles del evento -->
-                <form id="form-evento" class="wizard-form">
-                    <div class="step-content step-1 active">
-                        <div class="form-group">
-                            <label>Nombre del evento *</label>
-                            <input type="text" id="evento-nombre" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Categoría *</label>
-                            <select id="evento-categoria" required>
-                                <option value="">Selecciona una categoría</option>
-                                <option value="Conciertos">🎵 Conciertos</option>
-                                <option value="Teatro">🎭 Teatro</option>
-                                <option value="Cine">🎬 Cine</option>
-                                <option value="Exposiciones">🖼️ Exposiciones</option>
-                                <option value="Danza">💃 Danza</option>
-                                <option value="Libros">📚 Libros</option>
-                                <option value="Festival">🎉 Festival</option>
-                                <option value="Infantiles">🧸 Infantiles</option>
-                                <option value="Deportes">⚽ Deportes</option>
-                                <option value="Talleres">🔧 Talleres</option>
-                                <option value="Museos">🏛️ Museos</option>
-                                <option value="Ferias">🛍️ Ferias</option>
-                                <option value="Farándula">✨ Farándula</option>
-                                <option value="Otra">📌 Otra</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label>Poster del evento *</label>
-                            <div class="upload-area" id="poster-upload">
-                                <span>+ Haz clic para subir imagen</span>
-                                <input type="file" id="evento-poster" accept="image/*" hidden>
-                            </div>
-                            <div id="poster-preview"></div>
-                        </div>
-                        <div class="form-group">
-                            <label>Descripción</label>
-                            <textarea id="evento-descripcion" rows="3"></textarea>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label>Fecha de inicio *</label>
-                                <input type="date" id="evento-fecha-inicio" required>
-                            </div>
-                            <div class="form-group">
-                                <label>Hora de inicio *</label>
-                                <input type="time" id="evento-hora-inicio" required>
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label>Fecha de fin (opcional)</label>
-                                <input type="date" id="evento-fecha-fin">
-                            </div>
-                            <div class="form-group">
-                                <label>Hora de fin (opcional)</label>
-                                <input type="time" id="evento-hora-fin">
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label>Precio * (0 si es gratis)</label>
-                            <input type="number" id="evento-precio" value="0" step="0.01" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Máximo de invitados</label>
-                            <input type="number" id="evento-max-invitados">
-                        </div>
-                        <div class="form-checkboxes">
-                            <label><input type="checkbox" id="evento-menores"> Apto para menores (-18 años)</label>
-                            <label><input type="checkbox" id="evento-aire-libre"> Al aire libre</label>
-                            <label><input type="checkbox" id="evento-reservas"> Posibilidad de reservar</label>
-                        </div>
-                    </div>
-
-                    <!-- Paso 2: Ubicación -->
-                    <div class="step-content step-2">
-                        <div class="form-group">
-                            <label>Municipio *</label>
-                            <select id="evento-municipio" required>
-                                <option value="">Selecciona un municipio</option>
-                                <option value="Plaza de la Revolución">Plaza de la Revolución</option>
-                                <option value="Centro Habana">Centro Habana</option>
-                                <option value="La Habana Vieja">La Habana Vieja</option>
-                                <option value="Vedado">Vedado</option>
-                                <option value="Miramar">Miramar</option>
-                                <option value="Playa">Playa</option>
-                                <option value="Diez de Octubre">Diez de Octubre</option>
-                                <option value="Cerro">Cerro</option>
-                                <option value="Marianao">Marianao</option>
-                                <option value="La Lisa">La Lisa</option>
-                                <option value="Boyeros">Boyeros</option>
-                                <option value="Arroyo Naranjo">Arroyo Naranjo</option>
-                                <option value="Cotorro">Cotorro</option>
-                                <option value="San Miguel del Padrón">San Miguel del Padrón</option>
-                                <option value="Guanabacoa">Guanabacoa</option>
-                                <option value="Regla">Regla</option>
-                                <option value="Habana del Este">Habana del Este</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label>Sede o lugar *</label>
-                            <input type="text" id="evento-sede" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Dirección *</label>
-                            <input type="text" id="evento-direccion" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Ubicación en el mapa</label>
-                            <div id="mapa" style="height: 300px; width: 100%; border-radius: 12px;"></div>
-                            <p class="mapa-ayuda">Haz clic en el mapa para marcar la ubicación exacta</p>
-                            <input type="hidden" id="evento-lat" value="23.1136">
-                            <input type="hidden" id="evento-lng" value="-82.3666">
-                        </div>
-                    </div>
-
-                    <!-- Paso 3: Contacto y envío -->
-                    <div class="step-content step-3">
-                        <div class="form-group">
-                            <label>Contacto para reservas</label>
-                            <input type="text" id="evento-contacto-reserva">
-                        </div>
-                        <div class="form-group">
-                            <label>Programa (opcional)</label>
-                            <input type="file" id="evento-programa" accept=".pdf,.doc,.docx">
-                        </div>
-                        <div class="form-group">
-                            <label>Nombre y Apellidos (organizador) *</label>
-                            <input type="text" id="evento-organizador" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Teléfono de contacto *</label>
-                            <input type="tel" id="evento-telefono" required>
-                        </div>
-                        <div class="form-checkboxes">
-                            <label><input type="checkbox" id="evento-responsable" required> Me hago responsable de la veracidad de la información</label>
-                            <label><input type="checkbox" id="evento-terminos" required> Acepto los términos y condiciones</label>
-                        </div>
-                    </div>
-
-                    <div class="wizard-buttons">
-                        <button type="button" id="wizard-prev" class="btn-secondary" disabled>← Atrás</button>
-                        <button type="button" id="wizard-next" class="btn-primary">Siguiente →</button>
-                        <button type="submit" id="wizard-submit" class="btn-success" style="display: none;">Agregar evento</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </main>
-
-    <!-- Footer -->
-    <footer class="footer_page">
-        <div class="container">
-            <div class="footer-content">
-                <h1>Cultura Habana</h1>
-                <p>Los mejores planes culturales en La Habana
-                    <br><br>
-                    ¡No te pierdas ni una gota de cultura!
-                </p>
-            </div>
-            <div class="footer-content">
-                <h1>Contáctanos</h1>
-                <p>Correo: cultura@habana.cu</p>
-            </div>
-            <div class="footer-content">
-                <h1>Síguenos</h1>
-                <ul class="social-icons">
-                    <li><a class="social-button" href="#"><img class="facebook-dark" src="resources/icons_dark/facebook.png" alt="facebook"></a></li>
-                    <li><a class="social-button" href="#"><img class="instagram-dark" src="resources/icons_dark/instagram.png" alt="instagram"></a></li>
-                    <li><a class="social-button" href="#"><img class="telegram-dark" src="resources/icons_dark/telegram.png" alt="telegram"></a></li>
-                    <li><a class="social-button" href="#"><img class="whatsapp-dark" src="resources/icons_dark/whatsapp.png" alt="whatsapp"></a></li>
-                </ul>
-            </div>
-        </div>
-        <div class="botton-bar">
-            <p>&copy; 2026 Cultura Habana. Todos los derechos reservados</p>
-        </div>
-    </footer>
-
-    <script src="script.js"></script>
-    <script src="api.js"></script>
+            `).join('');
+        }
+        
+        cargarEventosDestacados();
+    </script>
 </body>
 </html>

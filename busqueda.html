@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Búsqueda | Cultura Habana</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <!-- Barra superior fija -->
+    <div class="top-bar">
+        <div class="top-bar-left">
+            <button class="menu-toggle-btn" id="menuToggleBtn">
+                <img id="menuIcon" src="resources/icons_light/menu.png" alt="menú">
+            </button>
+            <div class="logo">
+                <img src="resources/aguacero_cuba_logo_trasnparente.png" alt="Logo">
+                <span>Cultura Habana</span>
+            </div>
+        </div>
+        
+        <div class="top-bar-center">
+            <div class="search-container">
+                <input type="text" id="buscador-global" placeholder="Buscar eventos...">
+                <button class="search-btn" id="searchBtn">
+                    <img id="searchIconLight" src="resources/icons_light/search.png" alt="buscar">
+                    <img id="searchIconDark" src="resources/icons_dark/search.png" alt="buscar" style="display:none;">
+                </button>
+            </div>
+        </div>
+        
+        <div class="top-bar-right">
+            <button class="icon-btn" id="themeToggleBtn">
+                <img id="themeIconLight" src="resources/icons_light/moon.png" alt="tema">
+                <img id="themeIconDark" src="resources/icons_dark/sun.png" alt="tema" style="display:none;">
+            </button>
+            <button class="icon-btn" id="notificationsBtn">
+                <img id="notifIconLight" src="resources/icons_light/bell.png" alt="notificaciones">
+                <img id="notifIconDark" src="resources/icons_dark/bell.png" alt="notificaciones" style="display:none;">
+            </button>
+            <div class="avatar" id="avatarUsuario">U</div>
+        </div>
+    </div>
+
+    <!-- Menú lateral -->
+    <div class="sidebar" id="sidebar">
+        <div class="menu_container">
+            <ul class="menu">
+                <li class="menu-item"><a href="inicio.html" class="menu-link"><img class="home-light" src="resources/icons_light/home-alt.png"><img class="home-dark" src="resources/icons_dark/home-alt.png" style="display:none;"><span>Inicio</span></a></li>
+                <li class="menu-item menu-item-dropdown" id="categoriasDropdown">
+                    <a href="#" class="menu-link" id="categoriasBtn">
+                        <img class="categories-light" src="resources/icons_light/price-tag-alt.png"><img class="categories-dark" src="resources/icons_dark/price-tag-alt.png" style="display:none;"><span>Categorías</span>
+                        <img class="dropdown-light" src="resources/icons_light/chevron-down.png"><img class="dropdown-dark" src="resources/icons_dark/chevron-down.png" style="display:none;">
+                    </a>
+                    <ul class="sub-menu" id="submenuCategorias">
+                        <li><a href="#" class="sub-menu-link">Conciertos</a></li>
+                        <li><a href="#" class="sub-menu-link">Teatro</a></li>
+                        <li><a href="#" class="sub-menu-link">Cine</a></li>
+                        <li><a href="#" class="sub-menu-link">Exposiciones</a></li>
+                        <li><a href="#" class="sub-menu-link">Danza</a></li>
+                        <li><a href="#" class="sub-menu-link">Libros</a></li>
+                        <li><a href="#" class="sub-menu-link">Festival</a></li>
+                        <li><a href="#" class="sub-menu-link">Infantiles</a></li>
+                        <li><a href="#" class="sub-menu-link">Deportes</a></li>
+                        <li><a href="#" class="sub-menu-link">Talleres</a></li>
+                        <li><a href="#" class="sub-menu-link">Museos</a></li>
+                        <li><a href="#" class="sub-menu-link">Ferias</a></li>
+                        <li><a href="#" class="sub-menu-link">Farándula</a></li>
+                    </ul>
+                </li>
+                <li class="menu-item"><a href="calendario.html" class="menu-link"><img class="calendar-light" src="resources/icons_light/calendar-alt.png"><img class="calendar-dark" src="resources/icons_dark/calendar-alt.png" style="display:none;"><span>Calendario</span></a></li>
+                <li class="menu-item"><a href="mapa.html" class="menu-link"><img class="map-light" src="resources/icons_light/map.png"><img class="map-dark" src="resources/icons_dark/map.png" style="display:none;"><span>Mapa</span></a></li>
+                <li class="menu-item" id="menuPromocion" style="display: none;"><a href="promocion.html" class="menu-link"><img class="promo-light" src="resources/icons_light/plus-circle.png"><img class="promo-dark" src="resources/icons_dark/plus-circle.png" style="display:none;"><span>Promocionar</span></a></li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Contenido principal -->
+    <div class="main-content">
+        <div class="two-column-layout">
+            <!-- Resultados (izquierda) -->
+            <div id="resultados-busqueda" style="flex:1;">
+                <div class="resultados-header">
+                    <h3>Resultados para: <span id="termino-busqueda"></span></h3>
+                    <div class="resultados-orden">
+                        <label>Ordenar por:</label>
+                        <select id="orden-eventos">
+                            <option value="asc">Más antiguos primero</option>
+                            <option value="desc">Más recientes primero</option>
+                        </select>
+                    </div>
+                </div>
+                <div id="resultados-lista" class="resultados-scroll">
+                    <div class="loading-spinner">Cargando resultados...</div>
+                </div>
+            </div>
+            
+            <!-- Filtros (derecha) -->
+            <div class="filters-sidebar">
+                <h3>Intervalo de fechas</h3>
+                <div class="rango-inputs">
+                    <div class="rango-item">
+                        <label>Desde</label>
+                        <input type="date" id="fecha-inicio" class="fecha-input">
+                    </div>
+                    <div class="rango-item">
+                        <label>Hasta</label>
+                        <input type="date" id="fecha-fin" class="fecha-input">
+                    </div>
+                </div>
+                
+                <!-- Línea divisora -->
+                <hr class="divisor-filtros">
+                
+                <h3>Categorías</h3>
+                <div id="filtros-categorias" class="categorias-group"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="data.js"></script>
+    <script src="script.js"></script>
+    <script>
+        // ==================== INICIALIZACIÓN ESPECÍFICA ====================
+        const urlParams = new URLSearchParams(window.location.search);
+        const terminoBusqueda = urlParams.get('q') || '';
+        document.getElementById('termino-busqueda').textContent = terminoBusqueda || 'todos';
+        document.getElementById('buscador-global').value = terminoBusqueda;
+        
+        let categoriasSeleccionadas = [];
+        
+        function renderizarFiltros() {
+            const categorias = getCategoriasConEventos();
+            categoriasSeleccionadas = [...categorias];
+            const container = document.getElementById('filtros-categorias');
+            if (!container) return;
+            container.innerHTML = categorias.map(cat => `
+                <label class="categoria-checkbox">
+                    <input type="checkbox" class="filtro-categoria" value="${cat}" checked> ${cat}
+                </label>
+            `).join('');
+            document.querySelectorAll('.filtro-categoria').forEach(cb => {
+                cb.addEventListener('change', () => {
+                    categoriasSeleccionadas = Array.from(document.querySelectorAll('.filtro-categoria:checked')).map(c => c.value);
+                    renderizarResultados();
+                });
+            });
+        }
+        
+        function renderizarResultados() {
+            let eventos = buscarEventos(terminoBusqueda);
+            
+            if (categoriasSeleccionadas.length > 0) {
+                eventos = eventos.filter(e => categoriasSeleccionadas.includes(e.categoria));
+            }
+            
+            const fechaInicio = document.getElementById('fecha-inicio')?.value;
+            const fechaFin = document.getElementById('fecha-fin')?.value;
+            
+            if (fechaInicio) {
+                const inicio = new Date(fechaInicio);
+                inicio.setHours(0, 0, 0, 0);
+                eventos = eventos.filter(e => {
+                    const fechaEvento = new Date(e.fechaInicio);
+                    fechaEvento.setHours(0, 0, 0, 0);
+                    return fechaEvento >= inicio;
+                });
+            }
+            
+            if (fechaFin) {
+                const fin = new Date(fechaFin);
+                fin.setHours(23, 59, 59, 999);
+                eventos = eventos.filter(e => {
+                    const fechaEvento = new Date(e.fechaInicio);
+                    fechaEvento.setHours(0, 0, 0, 0);
+                    return fechaEvento <= fin;
+                });
+            }
+            
+            const orden = document.getElementById('orden-eventos')?.value || 'asc';
+            eventos.sort((a,b) => orden === 'asc' ? new Date(a.fechaInicio) - new Date(b.fechaInicio) : new Date(b.fechaInicio) - new Date(a.fechaInicio));
+            
+            const container = document.getElementById('resultados-lista');
+            if (!container) return;
+            
+            if (eventos.length === 0) {
+                container.innerHTML = '<div class="loading-spinner">No se encontraron eventos</div>';
+                return;
+            }
+            
+            container.innerHTML = eventos.map(evento => `
+                <div class="evento-resultado-item" onclick="window.location.href='detallesEvento.html?id=${evento.id}'">
+                    <img class="evento-resultado-img" src="${evento.poster}" onerror="this.src='https://picsum.photos/id/100/60/60'">
+                    <div class="evento-resultado-info">
+                        <h4>${evento.nombre}</h4>
+                        <p class="fecha">${formatFechaShort(evento.fechaInicio)} ${evento.horaInicio ? '· ' + evento.horaInicio.substring(0,5) : ''}</p>
+                        <span class="categoria-badge">${evento.categoria}</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        document.getElementById('fecha-inicio')?.addEventListener('change', renderizarResultados);
+        document.getElementById('fecha-fin')?.addEventListener('change', renderizarResultados);
+        document.getElementById('orden-eventos')?.addEventListener('change', renderizarResultados);
+        
+        renderizarFiltros();
+        renderizarResultados();
+    </script>
+</body>
+</html>

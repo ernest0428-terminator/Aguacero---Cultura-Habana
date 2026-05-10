@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mapa de eventos | Cultura Habana</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" />
+</head>
+<body>
+
+    <!-- Barra superior fija -->
+    <div class="top-bar">
+        <div class="top-bar-left">
+            <button class="menu-toggle-btn" id="menuToggleBtn">
+                <img id="menuIcon" src="resources/icons_light/menu.png" alt="menú">
+            </button>
+            <div class="logo">
+                <img src="resources/aguacero_cuba_logo_trasnparente.png" alt="Logo">
+                <span>Cultura Habana</span>
+            </div>
+        </div>
+        
+        <div class="top-bar-center">
+            <div class="search-container">
+                <input type="text" id="buscador-global" placeholder="Buscar eventos...">
+                <button class="search-btn" id="searchBtn">
+                    <img id="searchIconLight" src="resources/icons_light/search.png" alt="buscar">
+                    <img id="searchIconDark" src="resources/icons_dark/search.png" alt="buscar" style="display:none;">
+                </button>
+            </div>
+        </div>
+        
+        <div class="top-bar-right">
+            <button class="icon-btn" id="themeToggleBtn">
+                <img id="themeIconLight" src="resources/icons_light/moon.png" alt="tema">
+                <img id="themeIconDark" src="resources/icons_dark/sun.png" alt="tema" style="display:none;">
+            </button>
+            <button class="icon-btn" id="notificationsBtn">
+                <img id="notifIconLight" src="resources/icons_light/bell.png" alt="notificaciones">
+                <img id="notifIconDark" src="resources/icons_dark/bell.png" alt="notificaciones" style="display:none;">
+            </button>
+            <div class="avatar" id="avatarUsuario">U</div>
+        </div>
+    </div>
+
+    <!-- Menú lateral -->
+    <div class="sidebar" id="sidebar">
+        <div class="menu_container">
+            <ul class="menu">
+                <li class="menu-item"><a href="inicio.html" class="menu-link"><img class="home-light" src="resources/icons_light/home-alt.png"><img class="home-dark" src="resources/icons_dark/home-alt.png" style="display:none;"><span>Inicio</span></a></li>
+                <li class="menu-item menu-item-dropdown" id="categoriasDropdown">
+                    <a href="#" class="menu-link" id="categoriasBtn">
+                        <img class="categories-light" src="resources/icons_light/price-tag-alt.png"><img class="categories-dark" src="resources/icons_dark/price-tag-alt.png" style="display:none;"><span>Categorías</span>
+                        <img class="dropdown-light" src="resources/icons_light/chevron-down.png"><img class="dropdown-dark" src="resources/icons_dark/chevron-down.png" style="display:none;">
+                    </a>
+                    <ul class="sub-menu" id="submenuCategorias">
+                        <li><a href="#" class="sub-menu-link">Conciertos</a></li><li><a href="#" class="sub-menu-link">Teatro</a></li><li><a href="#" class="sub-menu-link">Cine</a></li>
+                        <li><a href="#" class="sub-menu-link">Exposiciones</a></li><li><a href="#" class="sub-menu-link">Danza</a></li><li><a href="#" class="sub-menu-link">Libros</a></li>
+                        <li><a href="#" class="sub-menu-link">Festival</a></li><li><a href="#" class="sub-menu-link">Infantiles</a></li><li><a href="#" class="sub-menu-link">Deportes</a></li>
+                        <li><a href="#" class="sub-menu-link">Talleres</a></li><li><a href="#" class="sub-menu-link">Museos</a></li><li><a href="#" class="sub-menu-link">Ferias</a></li>
+                        <li><a href="#" class="sub-menu-link">Farándula</a></li>
+                    </ul>
+                </li>
+                <li class="menu-item"><a href="calendario.html" class="menu-link"><img class="calendar-light" src="resources/icons_light/calendar-alt.png"><img class="calendar-dark" src="resources/icons_dark/calendar-alt.png" style="display:none;"><span>Calendario</span></a></li>
+                <li class="menu-item active"><a href="mapa.html" class="menu-link"><img class="map-light" src="resources/icons_light/map.png"><img class="map-dark" src="resources/icons_dark/map.png" style="display:none;"><span>Mapa</span></a></li>
+                <li class="menu-item" id="menuPromocion" style="display: none;"><a href="promocion.html" class="menu-link"><img class="promo-light" src="resources/icons_light/plus-circle.png"><img class="promo-dark" src="resources/icons_dark/plus-circle.png" style="display:none;"><span>Promocionar</span></a></li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Contenido principal - Mapa -->
+    <div class="main-content" style="padding: 0;">
+        <div class="mapa-container-full">
+            <div id="mapa-principal" style="height: calc(100vh - var(--header-height)); width: 100%;"></div>
+            <div class="map-filters-bar" id="mapFiltersBar">
+                <span>Filtrar por:</span>
+                <div id="map-categorias" class="map-categorias"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="data.js"></script>
+    <script>
+        // ==================== Tema Oscuro ====================
+        let isDarkMode = localStorage.getItem('darkMode') === 'true';
+        
+        function applyTheme() {
+            const iconPairs = ['home', 'categories', 'dropdown', 'calendar', 'map', 'promo'];
+            iconPairs.forEach(icon => {
+                const lightIcon = document.querySelector(`.${icon}-light`);
+                const darkIcon = document.querySelector(`.${icon}-dark`);
+                if (lightIcon && darkIcon) {
+                    if (isDarkMode) { lightIcon.style.display = 'none'; darkIcon.style.display = 'inline-block'; }
+                    else { lightIcon.style.display = 'inline-block'; darkIcon.style.display = 'none'; }
+                }
+            });
+            
+            const searchLight = document.getElementById('searchIconLight');
+            const searchDark = document.getElementById('searchIconDark');
+            const themeLight = document.getElementById('themeIconLight');
+            const themeDark = document.getElementById('themeIconDark');
+            const notifLight = document.getElementById('notifIconLight');
+            const notifDark = document.getElementById('notifIconDark');
+            const menuIcon = document.getElementById('menuIcon');
+            
+            if (isDarkMode) {
+                document.body.classList.add('dark-mode');
+                if (searchLight) searchLight.style.display = 'none';
+                if (searchDark) searchDark.style.display = 'inline-block';
+                if (themeLight) themeLight.style.display = 'none';
+                if (themeDark) themeDark.style.display = 'inline-block';
+                if (notifLight) notifLight.style.display = 'none';
+                if (notifDark) notifDark.style.display = 'inline-block';
+                if (menuIcon) menuIcon.src = 'resources/icons_dark/menu.png';
+            } else {
+                document.body.classList.remove('dark-mode');
+                if (searchLight) searchLight.style.display = 'inline-block';
+                if (searchDark) searchDark.style.display = 'none';
+                if (themeLight) themeLight.style.display = 'inline-block';
+                if (themeDark) themeDark.style.display = 'none';
+                if (notifLight) notifLight.style.display = 'inline-block';
+                if (notifDark) notifDark.style.display = 'none';
+                if (menuIcon) menuIcon.src = 'resources/icons_light/menu.png';
+            }
+        }
+        
+        document.getElementById('themeToggleBtn')?.addEventListener('click', () => {
+            isDarkMode = !isDarkMode;
+            localStorage.setItem('darkMode', isDarkMode);
+            applyTheme();
+            // Recargar mapa con nuevo estilo de tiles
+            if (map) {
+                map.eachLayer((layer) => {
+                    if (layer._url && layer._url.includes('basemaps')) {
+                        map.removeLayer(layer);
+                    }
+                });
+                const tileLayer = isDarkMode ? 
+                    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png') :
+                    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png');
+                tileLayer.addTo(map);
+            }
+        });
+        applyTheme();
+        
+        // ==================== Menú Lateral ====================
+        const sidebar = document.getElementById('sidebar');
+        let isMenuMinimized = localStorage.getItem('menuMinimized') === 'true';
+        
+        document.getElementById('menuToggleBtn')?.addEventListener('click', () => {
+            isMenuMinimized = !isMenuMinimized;
+            localStorage.setItem('menuMinimized', isMenuMinimized);
+            if (isMenuMinimized) sidebar.classList.add('minimize');
+            else sidebar.classList.remove('minimize');
+            setTimeout(() => { if (map) map.invalidateSize(); }, 300);
+        });
+        
+        if (isMenuMinimized) sidebar.classList.add('minimize');
+        else sidebar.classList.remove('minimize');
+        
+        let categoriasOpen = false;
+        const submenuCategorias = document.getElementById('submenuCategorias');
+        document.getElementById('categoriasBtn')?.addEventListener('click', (e) => {
+            e.preventDefault();
+            if (sidebar.classList.contains('minimize')) {
+                isMenuMinimized = false;
+                localStorage.setItem('menuMinimized', false);
+                sidebar.classList.remove('minimize');
+                setTimeout(() => {
+                    categoriasOpen = !categoriasOpen;
+                    submenuCategorias.style.height = categoriasOpen ? `${submenuCategorias.scrollHeight + 10}px` : '0';
+                    if (map) map.invalidateSize();
+                }, 300);
+            } else {
+                categoriasOpen = !categoriasOpen;
+                submenuCategorias.style.height = categoriasOpen ? `${submenuCategorias.scrollHeight + 10}px` : '0';
+            }
+        });
+        
+        // ==================== Avatar ====================
+        const avatarDiv = document.getElementById('avatarUsuario');
+        const menuPromocion = document.getElementById('menuPromocion');
+        
+        function updateAvatar() {
+            const usuario = getUsuarioActual();
+            if (usuario && usuario.nombre) {
+                avatarDiv.textContent = usuario.nombre.charAt(0).toUpperCase();
+                avatarDiv.style.backgroundColor = usuario.avatarColor || '#2ecc71';
+                if (usuario.rol === 'organizador') menuPromocion.style.display = 'block';
+                else menuPromocion.style.display = 'none';
+            } else {
+                avatarDiv.textContent = '?';
+                avatarDiv.style.backgroundColor = '#9CA2B8';
+                menuPromocion.style.display = 'none';
+            }
+        }
+        
+        avatarDiv.addEventListener('click', () => {
+            const usuario = getUsuarioActual();
+            if (usuario) {
+                if (confirm(`Cerrar sesión ${usuario.nombre}?`)) { cerrarSesion(); window.location.reload(); }
+            } else { window.location.href = 'login.html'; }
+        });
+        
+        // ==================== Búsqueda Global ====================
+        function realizarBusqueda() {
+            const termino = document.getElementById('buscador-global').value.trim();
+            if (termino) window.location.href = `busqueda.html?q=${encodeURIComponent(termino)}`;
+        }
+        
+        document.getElementById('buscador-global')?.addEventListener('keypress', (e) => { if (e.key === 'Enter') realizarBusqueda(); });
+        document.getElementById('searchBtn')?.addEventListener('click', realizarBusqueda);
+        
+        // ==================== Mapa ====================
+        let map;
+        let markerClusterGroup;
+        let categoriasActivas = [];
+        
+        function initMap() {
+            const tileUrl = isDarkMode ? 
+                'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png' :
+                'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png';
+            
+            map = L.map('mapa-principal').setView([23.1136, -82.3666], 12);
+            L.tileLayer(tileUrl, { attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a>' }).addTo(map);
+            
+            markerClusterGroup = L.markerClusterGroup();
+            map.addLayer(markerClusterGroup);
+            
+            cargarMarcadores();
+        }
+        
+        function cargarMarcadores() {
+            markerClusterGroup.clearLayers();
+            
+            let eventos = getEventosFuturos();
+            
+            if (categoriasActivas.length > 0) {
+                eventos = eventos.filter(e => categoriasActivas.includes(e.categoria));
+            }
+            
+            eventos.forEach(evento => {
+                if (evento.lat && evento.lng) {
+                    const marker = L.marker([evento.lat, evento.lng]);
+                    
+                    const popupContent = `
+                        <div style="min-width: 200px;">
+                            <img src="${evento.poster}" style="width: 100%; height: 100px; object-fit: cover; border-radius: 8px; margin-bottom: 8px;" onerror="this.src='https://picsum.photos/id/100/200/100'">
+                            <h4 style="margin: 0 0 4px 0;">${evento.nombre}</h4>
+                            <p style="margin: 0; font-size: 12px;"> ${formatFechaDDMMYYYY(evento.fechaInicio)}</p>
+                            <p style="margin: 4px 0 0 0; font-size: 12px;"><strong>${evento.categoria}</strong></p>
+                            <button onclick="window.location.href='detallesEvento.html?id=${evento.id}'" style="margin-top: 8px; padding: 4px 12px; background: rgb(2,90,138); color: white; border: none; border-radius: 20px; cursor: pointer;">Ver detalles</button>
+                        </div>
+                    `;
+                    
+                    marker.bindPopup(popupContent);
+                    marker.on('mouseover', function() { this.openPopup(); });
+                    markerClusterGroup.addLayer(marker);
+                }
+            });
+        }
+        
+        function renderizarFiltrosMapa() {
+            const categorias = getCategoriasConEventos();
+            categoriasActivas = [...categorias];
+            
+            const container = document.getElementById('map-categorias');
+            container.innerHTML = categorias.map(cat => `
+                <div class="map-category-chip ${categoriasActivas.includes(cat) ? 'active' : ''}" data-cat="${cat}">${cat}</div>
+            `).join('');
+            
+            document.querySelectorAll('.map-category-chip').forEach(chip => {
+                chip.addEventListener('click', () => {
+                    const cat = chip.getAttribute('data-cat');
+                    if (categoriasActivas.includes(cat)) {
+                        categoriasActivas = categoriasActivas.filter(c => c !== cat);
+                        chip.classList.remove('active');
+                    } else {
+                        categoriasActivas.push(cat);
+                        chip.classList.add('active');
+                    }
+                    cargarMarcadores();
+                });
+            });
+        }
+        
+        // ==================== Inicializar ====================
+        setTimeout(() => {
+            initMap();
+            renderizarFiltrosMapa();
+        }, 100);
+        
+        updateAvatar();
+        
+        document.getElementById('notificationsBtn')?.addEventListener('click', () => {
+            alert(' Notificaciones: Próximamente podrás recibir alertas.');
+        });
+        
+        window.addEventListener('resize', () => { if (map) map.invalidateSize(); });
+    </script>
+</body>
+</html>

@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iniciar Sesión | Cultura Habana</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        .auth-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--color-bg);
+            padding: 2rem;
+        }
+        .auth-card {
+            background: var(--color-surface);
+            border-radius: 24px;
+            padding: 2.5rem;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 10px 40px var(--shadow-border);
+        }
+        .auth-card h1 {
+            text-align: center;
+            margin-bottom: 0.5rem;
+            color: rgb(2, 90, 138);
+        }
+        .auth-card .subtitle {
+            text-align: center;
+            color: var(--color-text-secondary);
+            margin-bottom: 2rem;
+        }
+        .form-group {
+            margin-bottom: 1.2rem;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--color-text-primary);
+        }
+        .form-group input {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid var(--color-border);
+            border-radius: 12px;
+            background: var(--color-bg);
+            color: var(--color-text-primary);
+            font-size: 1rem;
+        }
+        .btn-login {
+            width: 100%;
+            padding: 0.8rem;
+            background: rgb(2, 90, 138);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .btn-login:hover {
+            background: rgb(2, 110, 168);
+            transform: translateY(-2px);
+        }
+        .register-link {
+            text-align: center;
+            margin-top: 1.5rem;
+            color: var(--color-text-secondary);
+        }
+        .register-link a {
+            color: rgb(2, 90, 138);
+            text-decoration: none;
+            font-weight: 600;
+        }
+        .error-message {
+            background: rgba(220, 53, 69, 0.1);
+            color: #dc3545;
+            padding: 0.8rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="auth-container">
+        <div class="auth-card">
+            <h1>🎭 Cultura Habana</h1>
+            <p class="subtitle">Inicia sesión para disfrutar de la cultura</p>
+            
+            <div id="error-message" class="error-message" style="display: none;"></div>
+            
+            <form id="login-form">
+                <div class="form-group">
+                    <label>Correo electrónico</label>
+                    <input type="email" id="email" placeholder="tucorreo@ejemplo.com" required autocomplete="email">
+                </div>
+                <div class="form-group">
+                    <label>Contraseña</label>
+                    <input type="password" id="password" placeholder="••••••••" required autocomplete="current-password">
+                </div>
+                <button type="submit" class="btn-login">Ingresar</button>
+            </form>
+            
+            <div class="register-link">
+                ¿No tienes cuenta? <a href="registro.html">Regístrate gratis</a>
+            </div>
+            <div class="register-link">
+                <a href="inicio.html">← Continuar sin iniciar sesión</a>
+            </div>
+        </div>
+    </div>
+
+    <script src="data.js"></script>
+    <script>
+        // Verificar si ya hay sesión activa
+        if (getUsuarioActual()) {
+            window.location.href = 'inicio.html';
+        }
+        
+        document.getElementById('login-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+            
+            const resultado = iniciarSesion(email, password);
+            
+            if (resultado.exito) {
+                window.location.href = 'inicio.html';
+            } else {
+                const errorDiv = document.getElementById('error-message');
+                errorDiv.textContent = resultado.mensaje;
+                errorDiv.style.display = 'block';
+                setTimeout(() => {
+                    errorDiv.style.display = 'none';
+                }, 3000);
+            }
+        });
+    </script>
+</body>
+</html>
